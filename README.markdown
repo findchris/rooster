@@ -73,7 +73,12 @@ Customization
 =============
 
 You can configure the EventMachine control server like so (defaults to:  {:host => "localhost", :port => "8080"}):
+
     Rooster::Runner.server_options = {:host => "1.2.3.4", :port => "5678"}
+
+When the EventMachine or rufus-scheduler encounter an exception, the module variable Rooster::Runner.error_handler is called.  By default, the exception is logged, but this can be customized like so:
+
+    Rooster::Runner.error_handler = lambda { |e| notify_hoptoad(e) }
 
 Author
 ======

@@ -3,8 +3,9 @@ module Rooster
     
     @@server_options = {:host => "localhost", :port => "8080"}
     @@logger = Logger.new(STDOUT)
+    @@error_handler = lambda { |exception| log exception.message }
     mattr_reader :scheduler
-    mattr_accessor :logger, :server_options
+    mattr_accessor :logger, :server_options, :error_handler
   
     def log(message)
       logger.info "Rooster::Runner [#{now}]:  #{message}"
@@ -78,8 +79,8 @@ module Rooster
         EventMachine::start_server @@server_options[:host], @@server_options[:port], Rooster::ControlServer 
         log "SchedulerControlServer started."
 
-        EventMachine.error_handler { |e| handle_exception(exception) }
-        def @@scheduler.handle_exception(job, exception); handle_exception(exception); end
+        EventMachine.error_handler { |e| error_handler.call(exception) }
+        def @@scheduler.handle_exception(job, exception); error_handler(exception); end  # recurring tasks remain scheduled even on exception
       end
       log "#{self.name} terminated at #{now}"
     end
@@ -93,11 +94,6 @@ module Rooster
         File.basename(filename).gsub(".rb", "").camelcase.constantize # RAILS_ROOT/rooster/lib/tasks/newsfeed_task.rb => NewsfeedTask
       end
       module_function :task_from_filename
-      
-      def handle_exception(exception)
-        log "Exception caught:  #{exception}"
-      end
-      module_function :handle_exception
 
   end
 end
