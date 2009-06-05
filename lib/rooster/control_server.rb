@@ -29,9 +29,7 @@ module Rooster
         end
       else
         log "Unrecognized command:  #{data}"
-      end    
-    rescue
-      log "Exception caught: #{$!}"
+      end
     end
   
     def unbind
