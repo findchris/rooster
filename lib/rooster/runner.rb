@@ -29,10 +29,8 @@ module Rooster
 
     # tasks in scheduled_tasks/*.rb are returned
     def available_tasks
-      puts File.join(Rooster::TASKS_DIR, "*.rb")
       returning [] do |tasks|
         Dir[File.join(Rooster::TASKS_DIR, "*.rb")].each do |filename|
-          puts "examingig:  #{filename}"
           tasks << task_from_filename(filename) || next
         end
       end
