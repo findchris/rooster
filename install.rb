@@ -7,10 +7,12 @@ begin
   source_dir = File.join(File.dirname(__FILE__), "src")
   destination_dir = File.join(RAILS_ROOT, "lib", "rooster")
   template_filename = "rooster_daemon.rb"
+  source_file = File.join(source_dir, template_filename)
+  destination_file = File.join(destination_dir, template_filename)
   
   FileUtils.mkdir_p(destination_dir)
     
-  FileUtils.copy_file(File.join(source_dir, template_filename), destination_dir) unless File.exist?(File.join(destination_dir, template_filename))
+  FileUtils.copy_file(source_file, destination_file) unless File.exist?(destination_file)
   
   puts File.read(File.join(File.dirname(__FILE__), 'README.markdown'))
   
