@@ -67,6 +67,7 @@ Valid commands are:
 * stop task_name (stops the task with a class name of "task_name")
 * start task_name (starts the task with a class name of "task_name")
 * restart task_name (stop/start)
+* exit (kills the EventMachine loop)
 
 Customization
 =============
