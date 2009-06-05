@@ -79,7 +79,7 @@ module Rooster
         EventMachine::start_server @@server_options[:host], @@server_options[:port], Rooster::ControlServer 
         log "SchedulerControlServer started."
 
-        EventMachine.error_handler { |e| error_handler.call(exception) }
+        EventMachine.error_handler { |exception| error_handler.call(exception) }
         def @@scheduler.handle_exception(job, exception); error_handler(exception); end  # recurring tasks remain scheduled even on exception
       end
       log "#{self.name} terminated at #{now}"
