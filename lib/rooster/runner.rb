@@ -11,26 +11,10 @@ module Rooster
       logger.info "Rooster::Runner [#{now}]:  #{message}"
     end
     module_function :log
-    
-    def logger
-      @@logger ||= if defined?(Rails.logger)
-          Rails.logger
-        elsif defined?(RAILS_DEFAULT_LOGGER)
-          RAILS_DEFAULT_LOGGER
-        else
-          Logger.new(STDOUT)
-        end
-    end
-    module_function :logger
-
-    def now
-      Time.respond_to?(:zone) ? Time.zone.now.to_s : Time.now.to_s
-    end
-    module_function :now
 
     # tasks in scheduled_tasks/*.rb are returned
     def available_tasks
-      returning [] do |tasks|
+      @@available_tasks ||= returning [] do |tasks|
         Dir[File.join(Rooster::TASKS_DIR, "*.rb")].each do |filename|
           tasks << task_from_filename(filename) || next
         end
@@ -53,6 +37,11 @@ module Rooster
       (name.is_a?(String) ? name.constantize : name).schedule
     end
     module_function :schedule
+        
+    def schedule_all
+      available_tasks.each { |task_name| schedule(task_name) }
+    end
+    module_function :schedule_all
   
     def unschedule(name)
       log "Unscheduling task #{name.to_s}..."
@@ -65,22 +54,25 @@ module Rooster
       jobs.first.unschedule      
     end
     module_function :unschedule
+        
+    def unschedule_all
+      available_tasks.each { |task_name| unschedule(task_name) }
+    end
+    module_function :unschedule_all
 
     def run
       log "Loaded #{Rails.env} environment"
       log "Starting #{self.name} at #{now}"
       EventMachine::run do
-        @@scheduler = Rufus::Scheduler::EmScheduler.start_new(:thread_name => 'Daemon Scheduler')
-  
-        log "Scheduling tasks..."
-        available_tasks.each { |task_name| schedule(task_name) }
+        @@scheduler = Rufus::Scheduler::EmScheduler.start_new(:thread_name => 'Rooster Scheduler')
+        
+        schedule_all
  
-        log "Starting SchedulerControlServer on #{@@server_options[:host]}:#{@@server_options[:port]}..."
         EventMachine::start_server @@server_options[:host], @@server_options[:port], Rooster::ControlServer 
-        log "SchedulerControlServer started."
+        log "Rooster::ControlServer started on #{@@server_options[:host]}:#{@@server_options[:port]}..."
 
         EventMachine.error_handler { |e| error_handler.call(e) }
-        def @@scheduler.handle_exception(job, e); error_handler(e); end  # recurring tasks remain scheduled even on exception
+        def @@scheduler.handle_exception(job, e); error_handler(e ); end  # recurring tasks remain scheduled even on exception
       end
       log "#{self.name} terminated at #{now}"
     end
@@ -91,9 +83,25 @@ module Rooster
       # full filename expected; requires and returns the task class
       def task_from_filename(filename)
         require filename
-        File.basename(filename).gsub(".rb", "").camelcase.constantize # RAILS_ROOT/rooster/lib/tasks/newsfeed_task.rb => NewsfeedTask
+        File.basename(filename).gsub(".rb", "").camelcase # RAILS_ROOT/rooster/lib/tasks/newsfeed_task.rb => NewsfeedTask
       end
       module_function :task_from_filename
 
+      def logger
+        @@logger ||= if defined?(Rails.logger)
+            Rails.logger
+          elsif defined?(RAILS_DEFAULT_LOGGER)
+            RAILS_DEFAULT_LOGGER
+          else
+            Logger.new(STDOUT)
+          end
+      end
+      module_function :logger
+
+      def now
+        Time.respond_to?(:zone) ? Time.zone.now.to_s : Time.now.to_s
+      end
+      module_function :now
+      
   end
 end
