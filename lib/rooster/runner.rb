@@ -3,7 +3,7 @@ module Rooster
     
     @@server_options = {:host => "localhost", :port => "8080"}
     @@logger = Logger.new(STDOUT)
-    @@error_handler = lambda { |exception| log exception.message }
+    @@error_handler = lambda { |e| log "Exception:  #{e}" }
     mattr_reader :scheduler
     mattr_accessor :logger, :server_options, :error_handler
   
@@ -79,8 +79,8 @@ module Rooster
         EventMachine::start_server @@server_options[:host], @@server_options[:port], Rooster::ControlServer 
         log "SchedulerControlServer started."
 
-        EventMachine.error_handler { |exception| error_handler.call(exception) }
-        def @@scheduler.handle_exception(job, exception); error_handler(exception); end  # recurring tasks remain scheduled even on exception
+        EventMachine.error_handler { |e| error_handler.call(e) }
+        def @@scheduler.handle_exception(job, e); error_handler(e); end  # recurring tasks remain scheduled even on exception
       end
       log "#{self.name} terminated at #{now}"
     end
