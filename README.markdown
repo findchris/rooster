@@ -6,6 +6,7 @@ Rooster is a Rails plugin providing a daemon for running and controlling schedul
 It consists of a scheduler daemon running an EventMachine loop that maintains a rufus-scheduler to keep track of your tasks.  An EventMachine-based TCP server listens for control commands to start and stop your tasks.
 
 The idea is to be able to deploy your Rails app with all of the needed functionality for running tasks in the background.  A few example of such tasks:
+
 * Generating nightly reports. 
 * Expiring database records.
 * Pulling an RSS feed every hour.
@@ -61,6 +62,7 @@ To control the server once running, connect to the control server like so:
     telnet 127.0.0.1 8080
 
 Valid commands are:
+
 * list (lists running tasks)
 * stop task_name (stops the task with a class name of "task_name")
 * start task_name (starts the task with a class name of "task_name")
