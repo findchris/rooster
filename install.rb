@@ -10,7 +10,7 @@ begin
   
   FileUtils.mkdir_p(destination_dir)
     
-  FileUtils.copy_file(File.join(source_dir, template_filename), destination_dir)) unless File.exist?(File.join(destination_dir, template_filename))
+  FileUtils.copy_file(File.join(source_dir, template_filename), destination_dir) unless File.exist?(File.join(destination_dir, template_filename))
   
   puts File.read(File.join(File.dirname(__FILE__), 'README.markdown'))
   
