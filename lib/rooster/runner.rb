@@ -5,23 +5,14 @@ module Rooster
     @@logger = Logger.new(STDOUT)
     @@error_handler = lambda { |e| log "Exception:  #{e}" }
     @@schedule_all_on_load = true
-    mattr_reader :scheduler
+    mattr_reader :scheduler, :tasks
     mattr_accessor :logger, :server_options, :error_handler, :schedule_all_on_load
   
     def log(message)
       logger.info "Rooster::Runner [#{now}]:  #{message}"
     end
     module_function :log
-  
-    def task_statuses
-      returning [] do |tasks|
-        @@tasks.each do |name, task|
-          tasks << (job.job_id + ":  " + job.tags.first)
-        end
-      end
-    end
-    module_function :task_statuses
-        
+          
     def schedule_all
       @@tasks.each do |name, task|
         task.schedule

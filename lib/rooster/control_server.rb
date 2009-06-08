@@ -15,7 +15,7 @@ module Rooster
         end
       elsif data =~ /^\s*(list)\s*$/i
         log_command($1) do
-          log runner.task_summary
+          log_task_summary
         end
       elsif data =~ /^\s*(exit)\s*$/i
         log_command($1) do
@@ -76,6 +76,12 @@ protected
       log "Command received: #{description}."
       yield
       log "Command completed: #{description}."
+    end
+    
+    def log_task_summary
+      runner.tasks.each do |name, task|
+        log "#{name}: #{task.status} #{task.schedule_info}"
+      end
     end
     
     def runner

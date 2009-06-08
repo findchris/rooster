@@ -17,8 +17,12 @@ module Rooster
       "#{self.class} [#{status}]>  Schedule info:  #{@job.schedule_info}"
     end
     
+    def schedule_info
+      scheduled? ? "(#{@job.schedule_info})" : ""
+    end
+    
     def log(message)
-      Rooster::Runner.log(message)
+      self.class.log(message)
     end
     
     class << self
@@ -45,6 +49,10 @@ module Rooster
         end
       end
 
+      def log(message)
+        Rooster::Runner.log(message)
+      end
+      
     end
   end
 end
