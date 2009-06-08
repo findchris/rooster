@@ -63,9 +63,11 @@ To control the server once running, connect to the control server like so:
 
 Valid commands are:
 
-* list (lists running tasks)
-* stop task_name (stops the task with a class name of "task_name")
+* list (lists a summary of tasks including task names and scheduled status)
 * start task_name (starts the task with a class name of "task_name")
+* stop task_name (stops the task with a class name of "task_name")
+* start_all (starts all of the available tasks)
+* stop_all (stops all of the available tasks)
 * restart task_name (stop/start)
 * exit (kills the EventMachine loop)
 

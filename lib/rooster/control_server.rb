@@ -80,7 +80,7 @@ protected
     
     def log_task_summary
       runner.tasks.each do |name, task|
-        log "#{name}: #{task.status} #{task.schedule_info}"
+        log " - #{name}:  #{task.status} #{task.schedule_info}"
       end
     end
     
