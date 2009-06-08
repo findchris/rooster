@@ -4,61 +4,47 @@ module Rooster
     @@server_options = {:host => "localhost", :port => "8080"}
     @@logger = Logger.new(STDOUT)
     @@error_handler = lambda { |e| log "Exception:  #{e}" }
+    @@schedule_all_on_load = true
     mattr_reader :scheduler
-    mattr_accessor :logger, :server_options, :error_handler
+    mattr_accessor :logger, :server_options, :error_handler, :schedule_all_on_load
   
     def log(message)
       logger.info "Rooster::Runner [#{now}]:  #{message}"
     end
     module_function :log
-
-    # tasks in scheduled_tasks/*.rb are returned
-    def available_tasks
-      @@available_tasks ||= returning [] do |tasks|
-        Dir[File.join(Rooster::TASKS_DIR, "*.rb")].each do |filename|
-          tasks << task_from_filename(filename) || next
-        end
-      end
-    end
-    module_function :available_tasks
   
-    def running_tasks
-      returning [] do |jobs|
-        @@scheduler.all_jobs.each_value do |job|
-          jobs << (job.job_id + ":  " + job.tags.first)
+    def task_statuses
+      returning [] do |tasks|
+        @@tasks.each do |name, task|
+          tasks << (job.job_id + ":  " + job.tags.first)
         end
       end
     end
-    module_function :running_tasks
-
-    # name can be a task name string (e.g. "NewsfeedTask") or the 
-    def schedule(name)
-      log "Scheduling task #{name.to_s}..."
-      (name.is_a?(String) ? name.constantize : name).schedule
-    end
-    module_function :schedule
+    module_function :task_statuses
         
     def schedule_all
-      available_tasks.each { |task_name| schedule(task_name) }
+      @@tasks.each do |name, task|
+        task.schedule
+      end
     end
     module_function :schedule_all
-  
-    def unschedule(name)
-      log "Unscheduling task #{name.to_s}..."
-      jobs = @@scheduler.find_by_tag(name)
-      
-      unless jobs.size == 1
-        log "Found (#{jobs.size}) '#{name}' tasks running."
-        return nil
-      end
-      jobs.first.unschedule      
-    end
-    module_function :unschedule
         
     def unschedule_all
-      available_tasks.each { |task_name| unschedule(task_name) }
+      @@tasks.each do |name, task|
+        task.unschedule
+      end
     end
     module_function :unschedule_all
+  
+    def schedule(name)
+      @@tasks[name].schedule
+    end
+    module_function :schedule
+    
+    def unschedule(name)
+      @@tasks[name].unschedule
+    end
+    module_function :unschedule
 
     def run
       log "Loaded #{Rails.env} environment"
@@ -66,17 +52,19 @@ module Rooster
       EventMachine::run do
         @@scheduler = Rufus::Scheduler::EmScheduler.start_new(:thread_name => 'Rooster Scheduler')
         
-        schedule_all
+        load_all
+        schedule_all if schedule_all_on_load
  
         EventMachine::start_server @@server_options[:host], @@server_options[:port], Rooster::ControlServer 
         log "Rooster::ControlServer started on #{@@server_options[:host]}:#{@@server_options[:port]}..."
 
         EventMachine.error_handler { |e| error_handler.call(e) }
-        def @@scheduler.handle_exception(job, e); error_handler(e ); end  # recurring tasks remain scheduled even on exception
+        def @@scheduler.handle_exception(job, e); error_handler.call(e); end  # recurring tasks remain scheduled even on exception
       end
       log "#{self.name} terminated at #{now}"
     end
     module_function :run
+
 
     private
      
@@ -102,6 +90,23 @@ module Rooster
         Time.respond_to?(:zone) ? Time.zone.now.to_s : Time.now.to_s
       end
       module_function :now
+      
+      def load_all
+        @@tasks = available_tasks.inject({}) do |tasks, task|
+          tasks.merge({task => task.constantize.new(@@scheduler)})
+        end
+      end
+      module_function :load_all      
+      
+      # tasks in scheduled_tasks/*.rb are returned
+      def available_tasks
+        @@available_tasks ||= returning [] do |tasks|
+          Dir[File.join(Rooster::TASKS_DIR, "*.rb")].each do |filename|
+            tasks << task_from_filename(filename) || next
+          end
+        end
+      end
+      module_function :available_tasks
       
   end
 end

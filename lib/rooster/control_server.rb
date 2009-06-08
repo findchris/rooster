@@ -1,16 +1,6 @@
 module Rooster
   module ControlServer  
-    
-    def post_init
-       log "Connection established.  Commands:"
-       log "  list                     Lists running tasks."
-       log "  stop_all                 Stops all tasks."
-       log "  start_all                Starts all available tasks."
-       log "  stop [TaskName]          Stops the specified task."
-       log "  start [TaskName]         Starts the specified task."
-       log "  exit                     Kills the scheduler."
-     end
-  
+      
     def receive_data(data)
       if data =~ /^\s*(stop|start|restart)\s+(\S+)\s*$/i
         log_command("#{$1} task #{$2}") do
@@ -25,9 +15,7 @@ module Rooster
         end
       elsif data =~ /^\s*(list)\s*$/i
         log_command($1) do
-          runner.running_tasks.each do |task|
-            log task
-          end
+          log runner.task_summary
         end
       elsif data =~ /^\s*(exit)\s*$/i
         log_command($1) do
@@ -45,10 +33,22 @@ module Rooster
         log "Unrecognized command:  #{data}"
       end
     end
-  
+
+    def post_init
+      log "Connection established.  Commands:"
+      log "  list                     Lists running tasks."
+      log "  stop_all                 Stops all tasks."
+      log "  start_all                Starts all available tasks."
+      log "  stop [TaskName]          Stops the specified task."
+      log "  start [TaskName]         Starts the specified task."
+      log "  exit                     Kills the scheduler."
+    end
+
     def unbind
       log "Connection closed."
     end
+  
+protected
   
     def stop_job(name)
       job = runner.unschedule(name)
@@ -81,6 +81,5 @@ module Rooster
     def runner
       Rooster::Runner
     end
-  
   end
 end
