@@ -13,7 +13,7 @@ require 'rubygems'
 require 'daemons'
 require 'rooster'
 
-pid_dir = Rails.root.join("log")
+pid_dir = File.join(Rails.root, "log")
 
 app_options = { 
   :dir_mode => :normal,
