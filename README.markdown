@@ -57,7 +57,11 @@ capistrano deploy scripts, etc.  Something like:
 Control Server
 ==============
 
-To control the server once running, connect to the control server like so:
+You can send commands to the control server using various rake tasks.  For a list of rake tasks, run:
+    
+    rake -T rooster
+
+As an alternative, you can connect to the control server like so:
 
     telnet 127.0.0.1 8080
 
