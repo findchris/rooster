@@ -12,7 +12,7 @@ begin
   
   FileUtils.mkdir_p(destination_dir)
     
-  FileUtils.copy_file(source_file, destination_file)
+  FileUtils.copy_file(source_file, destination_file, :force => true)
   
   puts File.read(File.join(File.dirname(__FILE__), 'README.markdown'))
   
