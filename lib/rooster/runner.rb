@@ -78,7 +78,7 @@ module Rooster
       module_function :logger
 
       def now
-        Time.respond_to?(:zone) ? Time.zone.now.to_s : Time.now.to_s
+        (Time.respond_to?(:zone) && Time.zone) ? Time.zone.now.to_s : Time.now.to_s
       end
       module_function :now
       
