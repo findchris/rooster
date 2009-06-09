@@ -1,1 +1,1 @@
-require File.join(File.dirname(__FILE__), 'lib', 'rooster.rb')
+require 'rooster'
