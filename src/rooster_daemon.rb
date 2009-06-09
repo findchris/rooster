@@ -8,12 +8,11 @@
 
 
 ENV["RAILS_ENV"] ||= "development"
-require File.dirname(__FILE__) + "/../../config/environment"
 require 'rubygems'
 require 'daemons'
-require 'rooster'
 
-pid_dir = File.join(Rails.root, "log")
+ROOT = File.expand_path(File.dirname(__FILE__) + '/../../')
+pid_dir = File.join(ROOT, "log")
 
 app_options = { 
   :dir_mode => :normal,
@@ -23,6 +22,9 @@ app_options = {
   :log_output => true
 }
 
-Daemons.run_proc("rooster_daemon.rb", app_options) do
+Daemons.run_proc("rooster_daemon", app_options) do  
+  require File.join(ROOT, "/config/environment")
+  require 'rooster'
+  
   Rooster::Runner.run
 end

@@ -2,7 +2,6 @@ module Rooster
   module Runner
     
     @@server_options = {:host => "localhost", :port => "8080"}
-    @@logger = Logger.new(STDOUT)
     @@error_handler = lambda { |e| log "Exception:  #{e}" }
     @@schedule_all_on_load = true
     mattr_reader :scheduler, :tasks
