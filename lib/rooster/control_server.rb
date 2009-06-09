@@ -52,13 +52,13 @@ protected
   
     def stop_job(name)
       job = runner.unschedule(name)
-      log(job ? "Successfully stopped: #{name}" : "Failed to stop: #{name}")
+      log_and_send(job ? "Successfully stopped: #{name}" : "Failed to stop: #{name}")
       job
     end
   
     def start_job(name)
       job = runner.schedule(name)
-      log(job ? "Successfully started: #{name}" : "Failed to start: #{name}")
+      log_and_send(job ? "Successfully started: #{name}" : "Failed to start: #{name}")
       job
     end
   
@@ -66,21 +66,25 @@ protected
       stop_job(name)
       start_job(name)
     end
+    
+    def log_and_send(message)
+      send_data(message + "\n")
+      runner.log(message)      
+    end
   
     def log(message)
-      send_data(message + "\n")
       runner.log(message)
     end
   
     def log_command(description, &block)
-      log "Command received: #{description}."
+      log_and_send "Command received: #{description}."
       yield
-      log "Command completed: #{description}."
+      log_and_send "Command completed: #{description}."
     end
     
     def log_task_summary
       runner.tasks.each do |name, task|
-        log " - #{name}:  #{task.status} #{task.schedule_info}"
+        log_and_send " - #{name}:  #{task.status} #{task.schedule_info}"
       end
     end
     
