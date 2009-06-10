@@ -106,7 +106,7 @@ Chris Johnson
 Credits
 ======
 
-This project was started by [Steven Soroka](http://blog.stevensoroka.ca) with his [scheduler_daemon plugin](git://github.com/ssoroka/scheduler_daemon.git).  I needed the ability to start/stop individual tasks, and so added an EventMachine-based TCP server to listen for control commands.  My initial fork of scheduler_daemon became quite different from the original project, and so I decided to just create a new project altogether.  My thanks to Steven for kicking this off in the right direction; the result of a few tweets back and forth.
+This project was started by [Steven Soroka](http://blog.stevensoroka.ca) with his [scheduler_daemon plugin](http://github.com/ssoroka/scheduler_daemon/tree/master).  I needed the ability to start/stop individual tasks, and so added an EventMachine-based TCP server to listen for control commands.  My initial fork of scheduler_daemon became quite different from the original project, and so I decided to just create a new project altogether.  My thanks to Steven for kicking this off in the right direction; the result of a few tweets back and forth.
 
 The dependencies of this plugin are all great projects providing great value to the community:  EventMachine, rufus-scheduler, Daemons, and Chronic.
 
