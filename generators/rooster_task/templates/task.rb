@@ -1,6 +1,6 @@
 class <%= class_name %>Task < Rooster::Task
-  define_schedule do |s|
-    s.every "10s", :tags => self.name do
+  define_schedule do |s|    
+    s.every "10s", :tags => self.name do  # refer to:  http://github.com/jmettraux/rufus-scheduler/tree/master
       begin
         log "#{self.name} starting at #{Time.now.to_s(:db)}"
       
