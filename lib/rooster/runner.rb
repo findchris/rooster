@@ -52,6 +52,7 @@ module Rooster
         def @@scheduler.handle_exception(job, e); @@error_handler.call(e); end  # recurring tasks remain scheduled even on exception
       end
       log "#{self.name} terminated at #{now}"
+      logger.flush if logger.respond_to?(:flush)      
     end
     module_function :run
 
