@@ -2,7 +2,7 @@ module Rooster
   module Runner
     
     @@server_options = {:host => "127.0.0.1", :port => "8080"}
-    @@error_handler = lambda { |e| Rooster::Runner.log "Exception:  #{e}" }
+    @@error_handler = lambda { |e| Rooster::Runner.log "Exception:  #{e}.  Backtrace:  #{e.backtrace}" }
     @@schedule_all_on_load = true
     mattr_reader :scheduler, :tasks
     mattr_accessor :logger, :server_options, :error_handler, :schedule_all_on_load
