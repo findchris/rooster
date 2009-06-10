@@ -90,6 +90,10 @@ Rooster has extensive logging, and by default will use the Rails logger if avail
 
     Rooster::Rooster.logger = Logger.new(STDOUT) # or Logger.new("custom.log")
 
+By default, all tasks are loaded when the daemon starts.  The can be customized like so:
+    
+    Rooster::Rooster.schedule_all_on_load = false
+
 Author
 ======
 
