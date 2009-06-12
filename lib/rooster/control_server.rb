@@ -2,7 +2,7 @@ module Rooster
   module ControlServer  
       
     def receive_data(data)
-      if data =~ /^\s*(stop|start|restart)\s+(\S+)\s*$/i
+      if data =~ /^\s*(stop|start|restart|kill)\s+(\S+)\s*$/i
         log_command("#{$1} task #{$2}") do
           case $1.downcase
             when "stop"
@@ -11,6 +11,8 @@ module Rooster
               start_job($2)
             when "restart"
               restart_job($2)
+            when "kill"
+              kill_job($2)
           end
         end
       elsif data =~ /^\s*(list)\s*$/i
@@ -41,6 +43,7 @@ module Rooster
       log "  start_all                Starts all available tasks."
       log "  stop [TaskName]          Stops the specified task."
       log "  start [TaskName]         Starts the specified task."
+      log "  kill [TaskName]          Kills the specified task if it's currently running and unschedules it."
       log "  exit                     Kills the scheduler."
     end
 
@@ -60,6 +63,13 @@ protected
       job = runner.schedule(name)
       log_and_send(job ? "Successfully started: #{name}" : "Failed to start: #{name}")
       job
+    end
+  
+    def kill_job(name)
+      killed_thread = runner.kill(name)
+      log_and_send(killed_thread ? "Successfully killed: #{name}" : "Failed to kill: #{name} (probably not running)")
+      stop_job(name)
+      killed_thread
     end
   
     def restart_job(name)
@@ -84,7 +94,7 @@ protected
     
     def log_task_summary
       runner.tasks.each do |name, task|
-        log_and_send " - #{name}:  #{task.status} #{task.schedule_info}"
+        log_and_send "#{task.summary}"
       end
     end
     

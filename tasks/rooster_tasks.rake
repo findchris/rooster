@@ -30,6 +30,11 @@ namespace :rooster do
     Rooster::ControlClient.send_command('start ' + get_task)
   end
   
+  desc "Kills the specified task if it's currently running and unschedules it. (USAGE:  rake rooster:kill TASK=MyTaskName)"
+  task :kill => :environment do
+    Rooster::ControlClient.send_command('kill ' + get_task)
+  end
+  
   desc "Retarts the specified task (USAGE:  rake rooster:restart TASK=MyTaskName)"
   task :restart => :environment do
     Rooster::ControlClient.send_command('restart ' + get_task)

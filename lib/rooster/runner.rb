@@ -35,6 +35,11 @@ module Rooster
       @@tasks[name].unschedule
     end
     module_function :unschedule
+    
+    def kill(name)
+      @@tasks[name].kill
+    end
+    module_function :kill
 
     def run
       log "Loaded #{Rails.env} environment"

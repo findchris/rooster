@@ -13,16 +13,28 @@ module Rooster
       !@job.nil?
     end
     
+    def running?
+      @job && @job.job_thread
+    end
+    
     def summary
-      "#{self.class} [#{status}]>  Schedule info:  #{@job.schedule_info}"
+      "#{self.class} [#{status}]>  Schedule info:  #{schedule_info} (#{running_info})"
     end
     
     def schedule_info
       scheduled? ? "(#{@job.schedule_info})" : ""
     end
     
+    def running_info
+      running? ? "Running" : "Not running"
+    end
+    
     def log(message)
       self.class.log(message)
+    end
+    
+    def kill
+      @job.job_thread.kill if running?
     end
     
     class << self
