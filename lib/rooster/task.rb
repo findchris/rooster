@@ -18,7 +18,7 @@ module Rooster
     end
     
     def summary
-      "#{self.class} [#{status}]>  Schedule info:  #{schedule_info} (#{running_info})"
+      "#{self.class} [#{status}]>  Schedule info:  #{schedule_info} (#{running_info}) #{tags_info}"
     end
     
     def schedule_info
@@ -27,6 +27,18 @@ module Rooster
     
     def running_info
       running? ? "Running" : "Not running"
+    end
+    
+    def tags_info
+      tags ? "TAGS=[#{tags.join(',')}]" : ""
+    end
+    
+    def tags
+      @job && @job.tags
+    end
+    
+    def tagged_with?(tag)
+      tags && tags.include?(tag)
     end
     
     def log(message)

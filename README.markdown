@@ -74,6 +74,7 @@ Valid commands are:
 * stop_all (stops all of the available tasks)
 * restart task_name (stop/start)
 * kill task_name (kills the specified task if it's currently running and unschedules it)
+* stop_tag tag (stops all tasks with the specified tag)
 * exit (kills the EventMachine loop)
 
 Customization

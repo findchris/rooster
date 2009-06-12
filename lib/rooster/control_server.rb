@@ -2,17 +2,21 @@ module Rooster
   module ControlServer  
       
     def receive_data(data)
-      if data =~ /^\s*(stop|start|restart|kill)\s+(\S+)\s*$/i
+      if data =~ /^\s*(stop|start|restart|kill|start_tag|stop_tag)\s+(\S+)\s*$/i
         log_command("#{$1} task #{$2}") do
           case $1.downcase
             when "stop"
-              stop_job($2)
+              stop_task($2)
             when "start"
-              start_job($2)
+              start_task($2)
             when "restart"
-              restart_job($2)
+              restart_task($2)
             when "kill"
-              kill_job($2)
+              kill_task($2)
+            # when "start_tag"
+            #   start_tasks_with_tag($2)
+            when "stop_tag"
+              stop_tasks_with_tag($2)
           end
         end
       elsif data =~ /^\s*(list)\s*$/i
@@ -43,6 +47,9 @@ module Rooster
       log "  start_all                Starts all available tasks."
       log "  stop [TaskName]          Stops the specified task."
       log "  start [TaskName]         Starts the specified task."
+      log "  restart [TaskName]       Stops then starts the specified task."
+      # log "  start_tag [tag]          Starts all tasks with the specified tag."
+      log "  stop_tag [tag]           Stops all tasks with the specified tag."
       log "  kill [TaskName]          Kills the specified task if it's currently running and unschedules it."
       log "  exit                     Kills the scheduler."
     end
@@ -53,28 +60,36 @@ module Rooster
   
 protected
   
-    def stop_job(name)
+    def stop_task(name)
       job = runner.unschedule(name)
       log_and_send(job ? "Successfully stopped: #{name}" : "Failed to stop: #{name}")
       job
     end
   
-    def start_job(name)
+    def start_task(name)
       job = runner.schedule(name)
       log_and_send(job ? "Successfully started: #{name}" : "Failed to start: #{name}")
       job
     end
   
-    def kill_job(name)
+    def kill_task(name)
       killed_thread = runner.kill(name)
       log_and_send(killed_thread ? "Successfully killed: #{name}" : "Failed to kill: #{name} (probably not running)")
-      stop_job(name)
+      stop_task(name)
       killed_thread
     end
   
-    def restart_job(name)
-      stop_job(name)
-      start_job(name)
+    def restart_task(name)
+      stop_task(name)
+      start_task(name)
+    end
+    
+    # def start_tasks_with_tag(tag)
+    #   runner.schedule_by_tag(tag)
+    # end
+    
+    def stop_tasks_with_tag(tag)
+      runner.unschedule_by_tag(tag)
     end
     
     def log_and_send(message)

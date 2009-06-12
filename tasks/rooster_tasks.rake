@@ -40,10 +40,28 @@ namespace :rooster do
     Rooster::ControlClient.send_command('restart ' + get_task)
   end
   
+  # desc "Starts all tasks with the specified tag. (USAGE:  rake rooster:start_tag TAG=MyTagName)"
+  # task :start_tag => :environment do
+  #   Rooster::ControlClient.send_command('start_tag ' + get_tag)
+  # end
+  
+  desc "Stops all tasks with the specified tag. (USAGE:  rake rooster:stop_tag TAG=MyTagName)"
+  task :stop_tag => :environment do
+    Rooster::ControlClient.send_command('stop_tag ' + get_tag)
+  end
+  
   def get_task
     unless ENV.include?("TASK")
       raise "USAGE:  rake rooster:[stop|start|restart] TASK=MyTaskName" 
     end
     ENV['TASK']
   end
+  
+  def get_tag
+    unless ENV.include?("TAG")
+      raise "USAGE:  rake rooster:[start_tag|stop_tag] TAG=MyTagName" 
+    end
+    ENV['TAG']
+  end
+  
 end

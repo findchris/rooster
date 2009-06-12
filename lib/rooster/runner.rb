@@ -13,18 +13,28 @@ module Rooster
     module_function :log
           
     def schedule_all
-      @@tasks.each do |name, task|
+      schedule_each(@@tasks)
+    end
+    module_function :schedule_all
+            
+    def schedule_each(tasks)
+      tasks.each do |name, task|
         task.schedule
       end
     end
-    module_function :schedule_all
+    module_function :schedule_each
         
     def unschedule_all
-      @@tasks.each do |name, task|
+      unschedule_each(@@tasks)
+    end
+    module_function :unschedule_all
+            
+    def unschedule_each(tasks)
+      tasks.each do |name, task|
         task.unschedule
       end
     end
-    module_function :unschedule_all
+    module_function :unschedule_each
   
     def schedule(name)
       @@tasks[name].schedule
@@ -40,6 +50,16 @@ module Rooster
       @@tasks[name].kill
     end
     module_function :kill
+        
+    # def schedule_by_tag(tag)
+    #   find_tasks_by_tag(tag).each { |task| task.schedule }
+    # end
+    # module_function :schedule_by_tag
+        
+    def unschedule_by_tag(tag)
+      find_tasks_by_tag(tag).each { |task| task.unschedule }
+    end
+    module_function :unschedule_by_tag
 
     def run
       log "Loaded #{Rails.env} environment"
@@ -92,7 +112,12 @@ module Rooster
           tasks.merge({task => task.constantize.new(@@scheduler)})
         end
       end
-      module_function :load_all      
+      module_function :load_all
+      
+      def find_tasks_by_tag(tag)
+        @@tasks.values.select { |task| task.tagged_with?(tag) }
+      end
+      module_function :find_tasks_by_tag
       
       # tasks in scheduled_tasks/*.rb are returned
       def available_tasks
