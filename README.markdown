@@ -89,11 +89,11 @@ When the EventMachine or rufus-scheduler encounter an exception, the module Proc
 
 Rooster has extensive logging, and by default will use the Rails logger if available, falling back on logging to STDOUT.  This can be customized:
 
-    Rooster::Rooster.logger = Logger.new(STDOUT) # or Logger.new("custom.log")
+    Rooster::Runner.logger = Logger.new(STDOUT) # or Logger.new(File.join(Rails.root, "log", "rooster.log"))
 
 By default, all tasks are loaded when the daemon starts.  The can be customized like so:
     
-    Rooster::Rooster.schedule_all_on_load = false
+    Rooster::Runner.schedule_all_on_load = false
 
 Author
 ======
