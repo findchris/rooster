@@ -12,10 +12,10 @@ module Rooster
     end
     module_function :log
           
-    def schedule_all
+    def schedule_all_tasks
       schedule_each(@@tasks)
     end
-    module_function :schedule_all
+    module_function :schedule_all_tasks
             
     def schedule_each(tasks)
       tasks.each do |name, task|
@@ -65,21 +65,24 @@ module Rooster
       log "Loaded #{Rails.env} environment"
       log "Starting #{self.name} at #{now}"
       EventMachine::run do
-        @@scheduler = Rufus::Scheduler::EmScheduler.start_new(:thread_name => 'Rooster Scheduler')
-        
-        load_all
-        schedule_all if schedule_all_on_load
- 
-        EventMachine::start_server @@server_options[:host], @@server_options[:port], Rooster::ControlServer 
-        log "Rooster::ControlServer started on #{@@server_options[:host]}:#{@@server_options[:port]}..."
-
-        EventMachine.error_handler { |e| @@error_handler.call(e) }
-        def @@scheduler.handle_exception(job, e); @@error_handler.call(e); end  # recurring tasks remain scheduled even on exception
+        load_scheduler
+        load_all_tasks
+        schedule_all_tasks if schedule_all_on_load
+        start_control_server
       end
       log "#{self.name} terminated at #{now}"
       logger.flush if logger.respond_to?(:flush)      
     end
     module_function :run
+    
+    def handle_error(e)
+      @@error_handler.call(e)
+    rescue
+      details = "Exception:  #{e}."
+      details += "  Backtrace:  #{e.backtrace.join("\n")}" if e.backtrace
+      log details rescue $stderr.puts details
+    end
+    module_function :handle_error
 
 
     private
@@ -90,6 +93,14 @@ module Rooster
         File.basename(filename).gsub(".rb", "").camelcase # RAILS_ROOT/rooster/lib/tasks/newsfeed_task.rb => NewsfeedTask
       end
       module_function :task_from_filename
+      
+      def load_scheduler
+        @@scheduler = Rufus::Scheduler::EmScheduler.start_new(:thread_name => 'Rooster Scheduler')        
+        def @@scheduler.handle_exception(job, e)
+          Rooster::Runner.handle_error(e)
+        end  # recurring tasks remain scheduled even on exception
+      end
+      module_function :load_scheduler
 
       def logger
         @@logger ||= if defined?(Rails.logger)
@@ -107,17 +118,23 @@ module Rooster
       end
       module_function :now
       
-      def load_all
+      def load_all_tasks
         @@tasks = available_tasks.inject({}) do |tasks, task|
           tasks.merge({task => task.constantize.new(@@scheduler)})
         end
       end
-      module_function :load_all
+      module_function :load_all_tasks
       
       def find_tasks_by_tag(tag)
         @@tasks.values.select { |task| task.tagged_with?(tag) }
       end
       module_function :find_tasks_by_tag
+      
+      def start_control_server
+        EventMachine::start_server @@server_options[:host], @@server_options[:port], Rooster::ControlServer 
+        log "Rooster::ControlServer started on #{@@server_options[:host]}:#{@@server_options[:port]}..."
+      end
+      module_function :start_control_server
       
       # tasks in scheduled_tasks/*.rb are returned
       def available_tasks

@@ -38,6 +38,8 @@ module Rooster
       else
         log "Unrecognized command:  #{data}"
       end
+    rescue
+      Rooster::Runner.handle_error($!)
     end
 
     def post_init
