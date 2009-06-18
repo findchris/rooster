@@ -86,7 +86,7 @@ You can configure the EventMachine control server like so (defaults to:  {:host 
 
 When the EventMachine or rufus-scheduler encounter an exception, the module Proc Rooster::Runner.error_handler is called.  By default, the exception is logged, but this can be customized like so:
 
-    Rooster::Runner.error_handler = lambda { |e| notify_hoptoad(e) }
+    Rooster::Runner.error_handler = lambda { |e| HoptoadNotifier.notify(e) }
 
 Rooster has extensive logging, and by default will use the Rails logger if available, falling back on logging to STDOUT.  This can be customized:
 
