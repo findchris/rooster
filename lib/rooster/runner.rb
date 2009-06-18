@@ -2,7 +2,7 @@ module Rooster
   module Runner
     
     @@server_options = {:host => "127.0.0.1", :port => "8080"}
-    @@error_handler = lambda { |e| Rooster::Runner.log "Exception:  #{e}.  Backtrace:  #{e.backtrace}" }
+    @@error_handler = lambda { |e| Rooster::Runner.log "Exception:  #{e}.  Backtrace:  #{e.backtrace.join("\n") rescue ''}" }
     @@schedule_all_on_load = true
     mattr_reader :scheduler, :tasks
     mattr_accessor :logger, :server_options, :error_handler, :schedule_all_on_load
@@ -97,8 +97,9 @@ module Rooster
       def load_scheduler
         @@scheduler = Rufus::Scheduler::EmScheduler.start_new(:thread_name => 'Rooster Scheduler')        
         def @@scheduler.handle_exception(job, e)
+          # NOTE:  recurring tasks remain scheduled even on exception
           Rooster::Runner.handle_error(e)
-        end  # recurring tasks remain scheduled even on exception
+        end
       end
       module_function :load_scheduler
 
