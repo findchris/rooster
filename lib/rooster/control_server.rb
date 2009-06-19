@@ -35,6 +35,10 @@ module Rooster
         log_command($1) do
           runner.schedule_all_tasks
         end
+      elsif data =~  /^\s*(quit)\s*$/i
+        log_command($1) do
+          close_connection_after_writing
+        end
       else
         log "Unrecognized command:  #{data}"
       end
@@ -54,6 +58,7 @@ module Rooster
       # log "  start_tag [tag]          Starts all tasks with the specified tag."
       log "  stop_tag [tag]           Stops all tasks with the specified tag."
       log "  kill [TaskName]          Kills the specified task if it's currently running and unschedules it."
+      log "  quit                     Closes the connection to the control server."
       log "  exit                     Kills the scheduler."
     end
 

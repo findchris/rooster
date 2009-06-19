@@ -75,6 +75,7 @@ Valid commands are:
 * restart task_name (stop/start)
 * kill task_name (kills the specified task if it's currently running and unschedules it)
 * stop_tag tag (stops all tasks with the specified tag)
+* quit (Closes the connection to the control server)
 * exit (kills the EventMachine loop)
 
 Customization
