@@ -29,16 +29,17 @@ module Rooster
         end        
       elsif data =~ /^\s*(start_all)\s*$/i
         log_command($1) do
-          runner.schedule_all
+          runner.schedule_all_tasks
         end
       elsif data =~ /^\s*(stop_all)\s*$/i
         log_command($1) do
-          runner.unschedule_all
+          runner.schedule_all_tasks
         end
       else
         log "Unrecognized command:  #{data}"
       end
     rescue
+      send_data "Exception:  #{$!}"
       Rooster::Runner.handle_error($!)
     end
 

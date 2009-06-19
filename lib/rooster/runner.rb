@@ -24,10 +24,10 @@ module Rooster
     end
     module_function :schedule_each
         
-    def unschedule_all
+    def unschedule_all_tasks
       unschedule_each(@@tasks)
     end
-    module_function :unschedule_all
+    module_function :unschedule_all_tasks
             
     def unschedule_each(tasks)
       tasks.each do |name, task|

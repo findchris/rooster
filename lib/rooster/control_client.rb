@@ -3,8 +3,10 @@ module Rooster
   class ControlClientBackend < EventMachine::Connection 
     def receive_data(data)      
       puts data      
-      close_connection_after_writing
-      sleep 2
+      close_connection
+    end
+    
+    def unbind
       EventMachine::stop_event_loop
     end
   end
