@@ -97,6 +97,15 @@ By default, all tasks are loaded when the daemon starts.  The can be customized 
     
     Rooster::Runner.schedule_all_on_load = false
 
+Notes
+=====
+
+Because of the way that forked processes work with the Rails environment, you should ensure that all of your database connections are released after usage, as in:
+
+		ActiveRecord::Base.connection_pool.release_connection
+		
+Generated Rooster tasks have this included by default with an ensure block. 
+
 Author
 ======
 
