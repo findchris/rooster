@@ -53,6 +53,8 @@ When you're done, get your system admin (or switch hats) to add the daemon to th
 capistrano deploy scripts, etc.  Something like:
 
     ruby /path/to/rails_app/lib/rooster/rooster_daemon.rb start
+      OR
+    rake rooster:launch
 
 Control Server
 ==============

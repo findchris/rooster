@@ -18,6 +18,7 @@ namespace :rooster do
   desc "Launch the Rooster daemon"
   task :launch do
     result = system "ruby ./lib/rooster/rooster_daemon.rb start"
+    puts "Rooster daemon #{result ? 'started successfully' : 'FAILED TO START'}."
   end
   
   desc "Quit the Rooster Control Server."
