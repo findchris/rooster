@@ -14,6 +14,11 @@ namespace :rooster do
   task :list => :environment do
     Rooster::ControlClient.send_command('list')
   end
+
+  desc "Launch the Rooster daemon"
+  task :launch do
+    result = system "ruby ./lib/rooster/rooster_daemon.rb start"
+  end
   
   desc "Quit the Rooster Control Server."
   task :exit => :environment do
