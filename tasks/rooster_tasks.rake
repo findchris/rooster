@@ -21,9 +21,15 @@ namespace :rooster do
     puts "Rooster daemon #{result ? 'started successfully' : 'FAILED TO START'}."
   end
   
-  desc "Quit the Rooster Control Server."
+  desc "Quit the Rooster daemon."
   task :exit => :environment do
     Rooster::ControlClient.send_command('exit')
+  end
+  
+  desc "Reloads the Rooster daemon."
+  task :reload do
+    Rake::Task['rooster:exit'].invoke
+    Rake::Task['rooster:launch'].invoke    
   end
   
   desc "Stops the specified task (USAGE:  rake rooster:stop TASK=MyTaskName)"
