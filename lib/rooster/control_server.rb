@@ -33,7 +33,7 @@ module Rooster
         end
       elsif data =~ /^\s*(stop_all)\s*$/i
         log_command($1) do
-          runner.schedule_all_tasks
+          runner.unschedule_all_tasks
         end
       elsif data =~  /^\s*(quit)\s*$/i
         log_command($1) do
