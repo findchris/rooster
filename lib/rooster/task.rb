@@ -1,6 +1,8 @@
 module Rooster
   class Task
     
+   class << self; attr_accessor :tags; end
+    
     def initialize(scheduler)
       @scheduler = scheduler
     end
@@ -32,13 +34,13 @@ module Rooster
     def tags_info
       tags ? "TAGS=[#{tags.join(',')}]" : ""
     end
-    
-    def tags
-      @job && @job.tags
-    end
-    
+        
     def tagged_with?(tag)
       tags && tags.include?(tag)
+    end
+    
+    def tags
+      self.class.tags
     end
     
     def log(message)
@@ -50,7 +52,7 @@ module Rooster
     end
     
     class << self
-      
+            
       def define_schedule
         define_method :schedule do
           if scheduled?

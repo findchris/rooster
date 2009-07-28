@@ -13,8 +13,8 @@ module Rooster
               restart_task($2)
             when "kill"
               kill_task($2)
-            # when "start_tag"
-            #   start_tasks_with_tag($2)
+            when "start_tag"
+              start_tasks_with_tag($2)
             when "stop_tag"
               stop_tasks_with_tag($2)
           end
@@ -55,7 +55,7 @@ module Rooster
       log "  stop [TaskName]          Stops the specified task."
       log "  start [TaskName]         Starts the specified task."
       log "  restart [TaskName]       Stops then starts the specified task."
-      # log "  start_tag [tag]          Starts all tasks with the specified tag."
+      log "  start_tag [tag]          Starts all tasks with the specified tag."
       log "  stop_tag [tag]           Stops all tasks with the specified tag."
       log "  kill [TaskName]          Kills the specified task if it's currently running and unschedules it."
       log "  quit                     Closes the connection to the control server."
@@ -92,9 +92,9 @@ protected
       start_task(name)
     end
     
-    # def start_tasks_with_tag(tag)
-    #   runner.schedule_by_tag(tag)
-    # end
+    def start_tasks_with_tag(tag)
+      runner.schedule_by_tag(tag)
+    end
     
     def stop_tasks_with_tag(tag)
       runner.unschedule_by_tag(tag)

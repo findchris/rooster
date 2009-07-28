@@ -51,10 +51,10 @@ module Rooster
     end
     module_function :kill
         
-    # def schedule_by_tag(tag)
-    #   find_tasks_by_tag(tag).each { |task| task.schedule }
-    # end
-    # module_function :schedule_by_tag
+    def schedule_by_tag(tag)
+      find_tasks_by_tag(tag).each { |task| task.schedule }
+    end
+    module_function :schedule_by_tag
         
     def unschedule_by_tag(tag)
       find_tasks_by_tag(tag).each { |task| task.unschedule }

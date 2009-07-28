@@ -1,9 +1,9 @@
 class <%= class_name %>Task < Rooster::Task
   
-  TAGS = [self.name]  # CUSTOMIZE:  add additional tags here
+  @tags = ['<%= class_name %>'] # CUSTOMIZE:  add additional tags here
   
   define_schedule do |s|
-    s.every "1d", :first_at => Chronic.parse("next 2:00am"), :tags => TAGS do  # CUSTOMIZE:  reference http://github.com/jmettraux/rufus-scheduler/tree/master
+    s.every "1d", :first_at => Chronic.parse("next 2:00am"), :tags => @tags do  # CUSTOMIZE:  reference http://github.com/jmettraux/rufus-scheduler/tree/master
       begin
         log "#{self.name} starting at #{Time.now.to_s(:db)}"
         ActiveRecord::Base.connection.reconnect!
