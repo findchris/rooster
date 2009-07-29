@@ -98,6 +98,18 @@ Rooster has extensive logging, and by default will use the Rails logger if avail
 By default, all tasks are loaded when the daemon starts.  The can be customized like so:
     
     Rooster::Runner.schedule_all_on_load = false
+    
+Deployment
+==========
+
+A simple capistrano task for restarting the Rooster daemon can be added to your deploy.rb file:
+
+    namespace :rooster do
+    desc "Reload Rooster Daemon"
+    task :reload, :roles => :rooster do
+      rails_env = fetch(:rails_env, "production")
+      run "cd #{current_path} && sudo rake RAILS_ENV=#{rails_env} rooster:reload"
+    end
 
 Notes
 =====
