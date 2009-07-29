@@ -105,10 +105,11 @@ Deployment
 A simple capistrano task for restarting the Rooster daemon can be added to your deploy.rb file:
 
     namespace :rooster do
-    desc "Reload Rooster Daemon"
-    task :reload, :roles => :rooster do
-      rails_env = fetch(:rails_env, "production")
-      run "cd #{current_path} && sudo rake RAILS_ENV=#{rails_env} rooster:reload"
+      desc "Reload Rooster Daemon"
+      task :reload, :roles => :rooster do
+        rails_env = fetch(:rails_env, "production")
+        run "cd #{current_path} && sudo rake RAILS_ENV=#{rails_env} rooster:reload"
+      end
     end
 
 Notes
