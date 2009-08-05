@@ -3,10 +3,12 @@ module Rooster
     
     @@server_options = {:host => "127.0.0.1", :port => "8080"}
     @@error_handler = lambda { |e| Rooster::Runner.log "Exception:  #{e}.  Backtrace:  #{e.backtrace.join("\n") rescue ''}" }
-    @@schedule_all_on_load = true
+    @@auto_schedule_tags = []
+    @@auto_schedule = true
     mattr_reader :scheduler, :tasks
-    mattr_accessor :logger, :server_options, :error_handler, :schedule_all_on_load
+    mattr_accessor :logger, :server_options, :error_handler, :auto_schedule_tags, :auto_schedule
   
+      
     def log(message)
       logger.info "Rooster::Runner [#{now}]:  #{message}"
     end
@@ -67,7 +69,7 @@ module Rooster
       EventMachine::run do
         load_scheduler
         load_all_tasks
-        schedule_all_tasks if schedule_all_on_load
+        auto_schedule_tasks if auto_schedule
         start_control_server
       end
       log "#{self.name} terminated at #{now}"
@@ -125,6 +127,17 @@ module Rooster
         end
       end
       module_function :load_all_tasks
+      
+      def auto_schedule_tasks
+        if auto_schedule_tags.empty?
+          schedule_all_tasks
+        else
+          auto_schedule_tags.each do |tag|
+            schedule_by_tag(tag)
+          end
+        end
+      end
+      module_function :auto_schedule_tasks
       
       def find_tasks_by_tag(tag)
         @@tasks.values.select { |task| task.tagged_with?(tag) }

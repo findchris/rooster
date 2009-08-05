@@ -95,9 +95,16 @@ Rooster has extensive logging, and by default will use the Rails logger if avail
 
     Rooster::Runner.logger = Logger.new(STDOUT) # or Logger.new(File.join(Rails.root, "log", "rooster.log"))
 
-By default, all tasks are loaded when the daemon starts.  The can be customized like so:
+By default, all tasks are scheduled when the daemon starts.  The can be customized like so:
     
-    Rooster::Runner.schedule_all_on_load = false
+    Rooster::Runner.auto_schedule = false
+    
+Also, you can schedule only a subset of tasks by specifying an array of tags for the auto_schedule_tags attribute.  This is handy for running different tasks on different servers, for example.  An omitted or nil value for the auto_schedule_tags attribute will auto-schedule all tasks available if the auto_schedule flag is set.  Example:
+    
+    Rooster::Runner.auto_schedule      = true
+    Rooster::Runner.auto_schedule_tags = ['app1', 'other_tag']
+
+
     
 Deployment
 ==========
