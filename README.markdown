@@ -103,6 +103,10 @@ Also, you can schedule only a subset of tasks by specifying an array of tags for
     
     Rooster::Runner.auto_schedule      = true
     Rooster::Runner.auto_schedule_tags = ['app1', 'other_tag']
+    
+Finally, there is some (limited) support for command-line parameters to the rooster daemon.  This is especially useful for when run rake commands are cumbersome, such as in a monit "start" command.  Currently, you may pass in an "auto_schedule_tags" parameter to the daemon, after including a separator of "--", as in:
+
+    ruby lib/rooster/rooster_daemon.rb start -- auto_schedule_tags=app1,other_tag
 
 
     

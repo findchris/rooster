@@ -63,15 +63,18 @@ module Rooster
     end
     module_function :unschedule_by_tag
 
-    def run
+    def run(options = [])
       log "Loaded #{Rails.env} environment"
       log "Starting #{self.name} at #{now}"
+
       EventMachine::run do
+        set_options_from_command_line(options)
         load_scheduler
         load_all_tasks
         auto_schedule_tasks if auto_schedule
         start_control_server
       end
+
       log "#{self.name} terminated at #{now}"
       logger.flush if logger.respond_to?(:flush)      
     end
@@ -95,6 +98,17 @@ module Rooster
         File.basename(filename).gsub(".rb", "").camelcase # RAILS_ROOT/rooster/lib/tasks/newsfeed_task.rb => NewsfeedTask
       end
       module_function :task_from_filename
+      
+      def set_options_from_command_line(options)
+        options.each do |opt|
+          matches = opt.scan(/auto_schedule_tags=(.+)/)
+          unless matches.empty?
+            auto_schedule = true
+            auto_schedule_tags = matches.flatten.first.split(',')
+          end
+        end
+      end
+      module_function :set_options_from_command_line
       
       def load_scheduler
         @@scheduler = Rufus::Scheduler::EmScheduler.start_new(:thread_name => 'Rooster Scheduler')        
