@@ -26,5 +26,5 @@ Daemons.run_proc("rooster_daemon", app_options) do
   require File.join(ROOT, "/config/environment")
   require 'rooster'
   
-  Rooster::Runner.run
+  Rooster::Runner.run(ARGV)
 end
