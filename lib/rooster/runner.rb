@@ -103,8 +103,9 @@ module Rooster
         options.each do |opt|
           matches = opt.scan(/auto_schedule_tags=(.+)/)
           unless matches.empty?
-            auto_schedule = true
-            auto_schedule_tags = matches.flatten.first.split(',')
+            log "Auto-scheduling tasks tagged with: #{matches.join(',')}"
+            @@auto_schedule = true
+            @@auto_schedule_tags = matches.flatten.first.split(',')
           end
         end
       end
