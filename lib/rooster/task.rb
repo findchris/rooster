@@ -16,7 +16,7 @@ module Rooster
     end
     
     def running?
-      @job && @job.job_thread
+      @job && thread(@job)
     end
     
     def summary
@@ -48,7 +48,7 @@ module Rooster
     end
     
     def kill
-      @job.job_thread.kill if running?
+      thread(@job).kill if running?
     end
     
     class << self
@@ -80,5 +80,12 @@ module Rooster
       end
       
     end
+    
+    private
+    
+      def thread(job)
+        job.respond_to?(:job_thread) ? job.job_thread : job.last_job_thread # different interface for different Rufus::Scheduler versions
+      end
+
   end
 end
