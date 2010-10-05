@@ -15,7 +15,7 @@ You can accomplish these same tasks using a combination of cron and script/runne
 
 The Daemons gem combined with the daemon_generator plugin works well, but we didn't like managing an army of daemon processes.  Rooster leverage one daemon for the main EventMachine loop, and dynamically schedules/unschedules tasks via the rufus-scheduler.
 
-This has only been tested on Rails 2.2.
+This has been tested on Rails 2.2, with preliminary Rails 3.0 support
 
 Setup
 =====
@@ -37,6 +37,14 @@ If you want to be able to use english time descriptions in your scheduled tasks,
 then install Chronic:
 
     sudo gem install chronic
+
+If you are using Rails 3, add these lines to your GEMSPEC file
+	
+	# For Rooster
+	gem 'daemons', '1.1.0'
+	gem 'eventmachine', '0.12.10'
+	gem 'chronic', '0.2.3', :require=> 'chronic' # if using Chronic...
+	
 
 Usage
 =====
@@ -134,6 +142,8 @@ Generated Rooster tasks have this included by default with an ensure block.
 
 Author
 ======
+
+Rails 3.0 support by David Pitman
 
 Chris Johnson
 
