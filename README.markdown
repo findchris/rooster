@@ -143,13 +143,15 @@ Generated Rooster tasks have this included by default with an ensure block.
 Author
 ======
 
-Rails 3.0 support by David Pitman
-
 Chris Johnson
 
 * [@findchris](http://twitter.com/findchris)
 * [My Github repo](http://github.com/findchris)
 * [My blog](http://foundchris.com)
+
+Contributors
+============
+* Rails 3.0 support by David Pitman (10/6/2010)
 
 Credits
 ======
