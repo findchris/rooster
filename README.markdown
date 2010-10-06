@@ -38,7 +38,7 @@ then install Chronic:
 
     sudo gem install chronic
 
-If you are using Rails 3, add these lines to your GEMSPEC file
+If you are using Rails 3, add these lines to your Gemfile file
 	
 	# For Rooster
 	gem 'daemons', '1.1.0'
