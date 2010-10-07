@@ -151,7 +151,7 @@ Chris Johnson
 
 Contributors
 ============
-* Rails 3.0 support by David Pitman (10/6/2010)
+* Rails 3.0 support by [David Pitman](http://github.com/edave) (10/6/2010)
 
 Credits
 ======
