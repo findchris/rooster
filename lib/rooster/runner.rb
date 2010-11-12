@@ -174,7 +174,7 @@ module Rooster
         end
         
         @@available_tasks ||=  if Rails::VERSION::MAJOR == 2
-                                 returning [] {|tasks| gather_tasks.call(tasks) }
+                                 returning([]) {|tasks| gather_tasks.call(tasks) }
                                elsif Rails::VERSION::MAJOR == 3
                                  [].tap {|tasks| gather_tasks.call(tasks)}
                                else

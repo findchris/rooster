@@ -5,7 +5,11 @@ begin
 
   RAILS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..")) unless defined?(RAILS_ROOT)
   source_dir = File.join(File.dirname(__FILE__), "src")
+<<<<<<< HEAD
   rails_root = (Rails::VERSION::MAJOR == 2 ? RAILS_ROOT : Rails.root)
+=======
+  rails _root = (Rails::VERSION::MAJOR == 2 ? RAILS_ROOT : Rails.root)
+>>>>>>> 181d505d88ddf6d5694bb81b09693a76b2df5a9d
   destination_dir = File.join(rails_root, "lib", "rooster")
     
   template_filename = "rooster_daemon.rb"
