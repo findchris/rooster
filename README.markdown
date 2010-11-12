@@ -43,6 +43,7 @@ If you are using Rails 3, add these lines to your Gemfile file
 	# For Rooster
 	gem 'daemons', '1.1.0'
 	gem 'eventmachine', '0.12.10'
+	gem 'rufus-scheduler'
 	gem 'chronic', '0.2.3', :require=> 'chronic' # if using Chronic...
 	
 
