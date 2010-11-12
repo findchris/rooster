@@ -11,7 +11,11 @@ elsif Rails::VERSION::MAJOR == 3
 
   module Rooster    
     class Railtie < Rails::Railtie
-      railtie_name :rooster
+      if Rails::VERSION::MAJOR == 2
+        railtie_name :rooster
+      else
+        config.rooster = ActiveSupport::OrderedOptions.new
+      end
 
       initializer "rooster.init" do |app|
          ROOSTER_DIR = File.join(Rails.root, "lib", "rooster")
