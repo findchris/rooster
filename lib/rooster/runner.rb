@@ -167,13 +167,21 @@ module Rooster
       
       # tasks in scheduled_tasks/*.rb are returned
       def available_tasks
-        @@available_tasks ||= returning [] do |tasks|
+        gather_tasks = Proc.new do |tasks|
           Dir[File.join(Rooster::TASKS_DIR, "*.rb")].each do |filename|
             tasks << task_from_filename(filename) || next
           end
         end
+        
+        @@available_tasks ||=  if Rails::VERSION::MAJOR == 2
+                                 returning [] {|tasks| gather_tasks.call(tasks)}
+                               elsif Rails::VERSION::MAJOR == 3
+                                 [].tap {|tasks| gather_tasks.call(tasks)}
+                               else
+                                 raise raise RuntimeError,
+                                 "Unknown Rails major version: '#{Rails::VERSION::MAJOR}'"
+                               end
       end
       module_function :available_tasks
-      
   end
 end
