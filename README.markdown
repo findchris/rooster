@@ -152,6 +152,7 @@ Chris Johnson
 
 Contributors
 ============
+* Rails 3.0 generator support by [Frederick Ros](https://github.com/sleeper) (11/11/2010)
 * Rails 3.0 support by [David Pitman](http://github.com/edave) (10/6/2010)
 
 Credits
