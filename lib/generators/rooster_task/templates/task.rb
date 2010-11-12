@@ -1,6 +1,6 @@
-class <%= class_name %>Task < Rooster::Task
+class <%= task_name %>Task < Rooster::Task
   
-  @tags = ['<%= class_name %>'] # CUSTOMIZE:  add additional tags here
+  @tags = ['<%= task_name %>'] # CUSTOMIZE:  add additional tags here
   
   define_schedule do |s|
     s.every "1d", :first_at => Chronic.parse("next 2:00am"), :tags => @tags do  # CUSTOMIZE:  reference http://github.com/jmettraux/rufus-scheduler/tree/master

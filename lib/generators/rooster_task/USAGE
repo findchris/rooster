@@ -1,0 +1,8 @@
+Description:
+    Generate a new scheduled task.
+
+Example:
+    rails generate rooster_task MyTask
+
+    This will create:
+      - file lib/rooster/tasks/my_task_task.rb

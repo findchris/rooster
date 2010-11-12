@@ -1,4 +1,4 @@
-class RoosterTaskGenerator < Rails::Generators::NamedBase
+class RoosterTaskGenerator < Rails::Generators::Base
   source_root File.expand_path('../templates', __FILE__)
   argument :task_name, :type => :string
   
